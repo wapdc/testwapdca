@@ -834,13 +834,9 @@ function drupal_settings_initialize() {
  *   The filename of the requested item or NULL if the item is not found.
  */
 function drupal_get_filename($type, $name, $filename = NULL) {
-  if (empty($name)) {
-    return NULL;
-  }
-
   // The location of files will not change during the request, so do not use
   // drupal_static().
-  static $files = array(), $dirs = array(), $bad = array();
+  static $files = array(), $dirs = array();
 
   // Profiles are a special case: they have a fixed location and naming.
   if ($type == 'profile') {
@@ -891,15 +887,7 @@ function drupal_get_filename($type, $name, $filename = NULL) {
         $extension = $type;
       }
 
-      // See if we have a cached list of files missing from the file system.
-      if (empty($bad)) {
-        $cache = cache_get('drupal_get_filename:bad');
-        if (!empty($cache->data)) {
-          $bad = $cache->data;
-        }
-      }
-
-      if (!isset($dirs[$dir][$extension]) && !isset($bad[$type][$name])) {
+      if (!isset($dirs[$dir][$extension])) {
         $dirs[$dir][$extension] = TRUE;
         if (!function_exists('drupal_system_listing')) {
           require_once DRUPAL_ROOT . '/includes/common.inc';
@@ -919,12 +907,6 @@ function drupal_get_filename($type, $name, $filename = NULL) {
   if (isset($files[$type][$name])) {
     return $files[$type][$name];
   }
-  elseif (!isset($bad[$type][$name])) {
-    // Add the missing file to a temporary cache and throw a watchdog alert.
-    $bad[$type][$name] = TRUE;
-    cache_set('drupal_get_filename:bad', $bad, 'cache', CACHE_TEMPORARY);
-    watchdog('system', 'The following @type is missing from the file system: @name.', array('@type' => $type, '@name' => $name), WATCHDOG_ALERT);
-  }
 }
 
 /**
@@ -941,19 +923,31 @@ function variable_initialize($conf = array()) {
     $variables = $cached->data;
   }
   else {
-    // Cache miss. Avoid a stampede.
-    $name = 'variable_init';
-    if (!lock_acquire($name, 1)) {
-      // Another request is building the variable cache.
-      // Wait, then re-run this function.
-      lock_wait($name);
-      return variable_initialize($conf);
+    try {
+      // Cache miss. Avoid a stampede.
+      $name = 'variable_init';
+      if (!lock_acquire($name, 1)) {
+        // Another request is building the variable cache.
+        // Wait, then re-run this function.
+        lock_wait($name);
+        return variable_initialize($conf);
+      }
+      else {
+        // Proceed with variable rebuild.
+        $variables = array_map('unserialize', db_query('SELECT name, value FROM {variable}')->fetchAllKeyed());
+        cache_set('variables', $variables, 'cache_bootstrap');
+        lock_release($name);
+      }
     }
-    else {
-      // Proceed with variable rebuild.
-      $variables = array_map('unserialize', db_query('SELECT name, value FROM {variable}')->fetchAllKeyed());
-      cache_set('variables', $variables, 'cache_bootstrap');
-      lock_release($name);
+    catch (PDOException $e) {
+      // A PDO exception trying to acquire the lock might mean that we are
+      // running on an empty database. In that case, just redirect the user to
+      // install.php, unless we're already there.
+      if (!db_table_exists('variable') && !drupal_installation_attempted()) {
+        include_once DRUPAL_ROOT . '/includes/install.inc';
+        install_goto('install.php');
+      }
+      throw $e;
     }
   }
 
