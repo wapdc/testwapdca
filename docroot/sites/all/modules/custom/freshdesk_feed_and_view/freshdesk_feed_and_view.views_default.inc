@@ -132,6 +132,12 @@ function freshdesk_feed_and_view_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'ticket' => 'ticket',
   );
+  /* Filter criterion: Content: Responder (field_responder) */
+  $handler->display->display_options['filters']['field_responder_value']['id'] = 'field_responder_value';
+  $handler->display->display_options['filters']['field_responder_value']['table'] = 'field_data_field_responder';
+  $handler->display->display_options['filters']['field_responder_value']['field'] = 'field_responder_value';
+  $handler->display->display_options['filters']['field_responder_value']['operator'] = '!=';
+  $handler->display->display_options['filters']['field_responder_value']['value'] = 'No Agent';
   $handler->display->display_options['path'] = 'tickets';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Current Investigations';

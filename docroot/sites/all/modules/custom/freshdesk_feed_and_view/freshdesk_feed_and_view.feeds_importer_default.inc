@@ -39,6 +39,7 @@ function freshdesk_feed_and_view_feeds_importer_default() {
           'xpathparser:4' => 'ticket-type',
           'xpathparser:5' => 'status-name',
           'xpathparser:6' => 'requester-name',
+          'xpathparser:7' => 'responder-name',
         ),
         'rawXML' => array(
           'xpathparser:0' => 0,
@@ -48,6 +49,7 @@ function freshdesk_feed_and_view_feeds_importer_default() {
           'xpathparser:4' => 0,
           'xpathparser:5' => 0,
           'xpathparser:6' => 0,
+          'xpathparser:7' => 0,
         ),
         'context' => '/helpdesk-tickets/helpdesk-ticket',
         'exp' => array(
@@ -63,6 +65,7 @@ function freshdesk_feed_and_view_feeds_importer_default() {
             'xpathparser:4' => 0,
             'xpathparser:5' => 0,
             'xpathparser:6' => 0,
+            'xpathparser:7' => 0,
           ),
         ),
         'allow_override' => 0,
@@ -108,6 +111,11 @@ function freshdesk_feed_and_view_feeds_importer_default() {
           6 => array(
             'source' => 'xpathparser:6',
             'target' => 'field_requester',
+            'unique' => FALSE,
+          ),
+          7 => array(
+            'source' => 'xpathparser:7',
+            'target' => 'field_responder',
             'unique' => FALSE,
           ),
         ),

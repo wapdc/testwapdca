@@ -141,7 +141,7 @@ function freshdesk_feed_and_view_field_default_field_instances() {
       'module' => 'number',
       'settings' => array(),
       'type' => 'number',
-      'weight' => 4,
+      'weight' => 3,
     ),
   );
 
@@ -169,6 +169,45 @@ function freshdesk_feed_and_view_field_default_field_instances() {
     'entity_type' => 'node',
     'field_name' => 'field_requester',
     'label' => 'Requester',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 6,
+    ),
+  );
+
+  // Exported field_instance: 'node-ticket-field_responder'
+  $field_instances['node-ticket-field_responder'] = array(
+    'bundle' => 'ticket',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 7,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_responder',
+    'label' => 'Responder',
     'required' => 0,
     'settings' => array(
       'text_processing' => 0,
@@ -221,7 +260,7 @@ function freshdesk_feed_and_view_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 6,
+      'weight' => 5,
     ),
   );
 
@@ -260,7 +299,7 @@ function freshdesk_feed_and_view_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 5,
+      'weight' => 4,
     ),
   );
 
@@ -269,6 +308,7 @@ function freshdesk_feed_and_view_field_default_field_instances() {
   t('Created at');
   t('HTML Description');
   t('Requester');
+  t('Responder');
   t('Status');
   t('Ticket type');
   t('id');
