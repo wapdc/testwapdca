@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Freshdesk_feed_and_view feature.
+ */
+
+include_once 'freshdesk_feed_and_view.features.inc';
