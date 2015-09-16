@@ -1,0 +1,65 @@
+<?php
+
+
+
+
+function pdc_sso_block_info() {
+	$blocks = array();
+	$blocks['freshdesk'] = array(
+		'info' => t('FreshBlock'),
+	);
+	return $blocks;
+}
+
+function pdc_sso_block_view($delta='') {
+	$block = array();
+	switch ($delta) {
+	case 'freshdesk':
+		$block['subject'] = '';
+		$block['content'] = freshdesk_login();
+		break;
+	}
+	return $block;
+}
+
+
+
+
+
+function pdc_sso_menu() {  
+   
+  $items['logout/freshdesk'] = array(
+    'title' => 'Freshdesk Logout',      
+    'page callback' => 'freshdesk_logout',
+	'page arguments' => array(),
+    'access callback' => 'user_is_logged_in',
+    
+  ); 
+ 
+  return $items;
+}
+ 
+
+function freshdesk_login(){
+  global $user;
+  $utc_time_stamp = time();
+  drupal_goto(
+    'https://pdcdemo.freshdesk.com/login/sso', array(
+	  'query'=>array(
+        'name'=>$user->name,
+        'email'=>$user->mail,
+        'timestamp'=> $utc_time_stamp,
+        'hash'=>hash_hmac('md5', $user->name . $user->mail . $utc_time_stamp, '65346a0f22956811be56b88432c144d8'),
+      )
+	)
+  );
+	
+	
+  return 'your in';
+}
+function freshdesk_logout(){
+  module_load_include('pages.inc', 'user');
+  user_logout();
+  
+  return 'your are logged out';
+}
