@@ -42,20 +42,22 @@ function pdc_sso_menu() {
 
 function freshdesk_login(){
   global $user;
+  $loaded_user = user_load($user->uid);
+  $loaded_user_name = $loaded_user->field_first_name['und'][0]['value'] . ' ' . $loaded_user->field_last_name['und'][0]['value'];
   $utc_time_stamp = time();
   $url = url(
     'https://pdcdemo.freshdesk.com/login/sso', array(
 	  'query'=>array(
-        'name'=>$user->field_first_name['und'][0]['value'] . ' ' . $user->field_last_name['und'][0]['value'],
-        'email'=>$user->mail,
+        'name'=>$loaded_user_name,
+        'email'=>$loaded_user->mail,
         'timestamp'=> $utc_time_stamp,
-        'hash'=>hash_hmac('md5', $user->name . $user->mail . $utc_time_stamp, '65346a0f22956811be56b88432c144d8'),
+        'hash'=>hash_hmac('md5', $loaded_user_name . $loaded_user->mail . $utc_time_stamp, '65346a0f22956811be56b88432c144d8'),
       )
 	)
   );
+	drupal_goto($url);
 	
-	
-  return $url;
+  return '';
 }
 function freshdesk_logout(){
   module_load_include('pages.inc', 'user');
