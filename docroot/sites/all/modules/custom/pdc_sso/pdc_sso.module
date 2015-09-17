@@ -46,7 +46,7 @@ function freshdesk_login(){
   drupal_goto(
     'https://pdcdemo.freshdesk.com/login/sso', array(
 	  'query'=>array(
-        'name'=>$user->name,
+        'name'=>field_first_name['und'][0]['value'] . ' ' . field_last_name['und'][0]['value'],
         'email'=>$user->mail,
         'timestamp'=> $utc_time_stamp,
         'hash'=>hash_hmac('md5', $user->name . $user->mail . $utc_time_stamp, '65346a0f22956811be56b88432c144d8'),

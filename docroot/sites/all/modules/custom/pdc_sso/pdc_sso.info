@@ -1,3 +1,4 @@
 name = PDC Single Sign On
 description = Provides single sign on cababilities for differnt apps.
 core = 7.x
+package = PDC
