@@ -43,7 +43,7 @@ function pdc_sso_menu() {
 function freshdesk_login(){
   global $user;
   $utc_time_stamp = time();
-  drupal_goto(
+  $url = url(
     'https://pdcdemo.freshdesk.com/login/sso', array(
 	  'query'=>array(
         'name'=>$user->field_first_name['und'][0]['value'] . ' ' . $user->field_last_name['und'][0]['value'],
@@ -55,7 +55,7 @@ function freshdesk_login(){
   );
 	
 	
-  return 'your in';
+  return $url;
 }
 function freshdesk_logout(){
   module_load_include('pages.inc', 'user');
